@@ -1,0 +1,811 @@
+.TL
+Avances en el Área de Prevención de Fraudes
+.AU
+Moisés Soto 
+.AI
+Datos recavados de internet
+.AB no
+.I
+Abstracto: 
+.R
+Este documento muestra bases teóricas y generales, del fraude en los
+seguros de autos, con el propósito de generar una intuición sobre como
+atacar el problema. Se plantea el problema de la prevención fraudes 
+y se realiza la introducción a la implementación de modelos de 
+.I
+Machine Learning 
+.R
+que permitan detectar con antelación el riesgo de que una póliza 
+culmine en un reclamo fraudulento.
+Se lleva a cabo la elaboración de un ejemplo utilizando uno de
+dichos modelos, con el cual se busca demostrar, el flujo de trabajo
+general, la selección y transformación de diferentes tipos de 
+información para ser utilizados en modelos de 
+.I
+Machine Learning. 
+.R
+.AE
+.NH
+Introducción
+.2C
+.PP
+El fraude en los seguros es un tema dificil de tratar, 
+existe un amplio catálogo de formas 
+para hacer fraude a una compañia de Seguros,
+esto sumado a que se tiene una cantidad 
+relativamente pequeña de dichos incidentes
+para ser estudiados. \**
+.FS
+Para poder generar reglas de generalización 
+adecuadas, donde intervenga un amplio número de 
+variables se requiere tener una cantidad
+proporcionalmente grande de incidentes de fraude
+.FE
+Para construir modelos eficaces de prevención
+de fraude, se tendrá que comparar las pérdidas 
+por predicciones erróneas, con las ganancias por 
+detectar de manera acertada los fraudes.
+La detección deberá ser previa al siniestro
+ya que una vez que este tenga lugar, se le dará
+un enfoque reactivo, es decir, de analizar
+la póliza y al asegurado, comparar el reclamo con
+otros similares que hayan sido fraude y en general;
+llevar a cabo una investigacion adecuada para garantizar
+la causa justa de la indemnización.
+
+El problema de prevención trata entonces de evitar
+llegar a estas ultimas instancias de investigación,
+ademas de asignar una mayor cantidad de recursos
+a polizas con alto riesgo de fraude.
+Aunque la información utilizada esta relacionada 
+en ambos extremos del problema del fraude\** 
+.FS
+La información que se obtenga sobre reclamos
+fraudulentos o sospechosos es la que servirá para
+la generación de los modelos de prevención.
+.FE
+a esta última instancia a la que se llega, 
+es el problema que busca evitar el area preventiva.
+.PP
+Las fuentes de información para la elaboración de este
+documento provienen de diferentes regiones y países
+del mundo, esto permite tener un panorama general que
+contemple la mayor cantidad de posibilidades de fraude,
+asi como formas de combatir o prevenir estas.
+
+Este documento tratará en mayor medida del fraude realizado
+por externos, es decir asegurados, clientes o proveedores 
+aunque también se discutirán algunos casos de fraude 
+interno hecho por agentes u otros miembros de la compañía.
+Asimismo entraremos en materia de tecnologías y técnicas
+cuya implementacion podría reducir considerablemente
+el costo incurrido por fraude.
+
+.NH
+Factores Ambientales.
+.PP
+El encarecimiento general de repuestos
+refacciones y mantenimiento de un vehículo han hecho 
+que se vuelva una carga cada vez más difícil de soportar
+para algunas personas, como consecuencia, el costo de los
+seguros que van de acuerdo a estos gastos también aumentan
+.[ and .].
+Este ámbito económico en el que se desarrolla el seguro
+de autos lo vuelve una tentación para personas regulares,
+así como una salida desesperada para aquellos con dificultades
+económicas. Si un reclamante ha sufrido una pérdida económica
+fuerte recientemente o ha declarado bancarrota, pueden 
+ser motivos para querer buscar la forma de cometer fraude 
+a una compañía aseguradora con el fin de salir de su apuro
+.[ and .], asimismo, consideremos el caso del dueño de un 
+automóvil en muy malas condiciones como para ser vendido,
+al querer deshacerse de dicho vehículo, esta persona podria
+considerar el fraude como forma rápida de conseguir
+una suma económica que por otros medios, dificilmente
+obtendría.
+
+Mientras que en muchos casos se asocia el fraude en seguros
+con tramas elaboradas y organizaciones de criminales,
+expertos en la industria revelan que ese no siempre es el caso.
+El director de la 
+.I
+Coalition Against Insurance Fraud
+.R
+declara que, un gran volumen de fraudes a aseguradoras es
+cometido por personas oportunistas, tratando de sacar alguna
+ventaja de la situación, y que al ser reclamos realistas 
+de montos pequeños, ocurren sin levantar mayores sospechas. 
+
+El director ejecutivo de 
+.I
+Pennsylvania Insurance Fraud Prevention Authority
+.R
+dice que mientras los círculos de crimen causan el daño
+financiero más grande, hay un grande número de actos
+oportunistas de fraude .[ and .].
+Los fraudes cometidos por este tipo de personas son
+espontáneos y surgen únicamente al presentarese la 
+situación, esto los puede volver difíciles de detectar
+con métodos de detección de anomalías.
+
+.NH
+Indicadores de Fraude.
+.PP
+Es imposible determinar con antelación todos aquellos 
+factores que pueden constituir indicios de un fraude, 
+sin embargo, existen medidas que pueden facilitar la 
+investigación.
+.IP -
+.I
+Historial de reclamos pasados.
+.IP -
+.I
+Siniestro a poco tiempo de adquirir una póliza.
+.IP -
+.I
+Hora de ocurrencia.
+.IP -
+.I
+Daños no congruentes con la declaración.
+.IP -
+.I
+Contradicciones en declaración.
+.IP -
+.I
+Lesiones no congruentes con daños materiales.
+.[ and .]
+.[ and .]
+.LP
+El fraude en seguros es atractivo para las personas 
+por el alto rendimiento y bajo riesgo para el 
+defraudador, ya que no existe una prosecución y lo 
+más que puede pasar es la cancelación de la póliza. 
+La amplia gama de posibilidades para cometer diversos 
+tipos de fraude, y en general existe una actitud relajada 
+respecto a este, se le ha llegado a llamar erróneamente un 
+fraude "sin victima" aunque lo cierto es que es un 
+fraude donde la víctima es un conjunto de asegurados, 
+que pagan primas proporcionalmente más elevadas.
+.[ and .]
+.NH
+Fraude Interno
+.PP
+Perpetrados contra y dentro de la misma compañía o sus 
+asegurados, hecho por agentes, gerentes, ejecutivos y 
+otros empleados. Algunos ejemplos de este tipo de fraude 
+incluyen: Documentos falsos: El agente o asegurador emite 
+pólizas falsas, certificados y demás documentos con el 
+fin de obtener una comisión u otra ventaja relacionada [11].
+.IP - 
+El denominado 
+.BI
+"Lapping"
+.R
+, consiste en que el agente roba 
+las primas y las encubre acreditándole a la cuenta de un 
+cliente ficticio primas de otro cliente.
+.IP - 
+El 
+.BI
+"Skimming"
+.R
+, consiste en el robo de las primas antes 
+de que los pagos sean acreditados a la cuenta de los clientes. 
+Sucede cuando un agente corrupto guarda la documentación de 
+las pólizas en vez de entregarla a la compañía, de esta forma 
+pueden robar las primas ya que la compañía no sabe que las 
+pólizas existen.
+.IP - 
+.B
+Falsificación
+.R
+: Falsificar la firma del tenedor de póliza 
+para robar primas y valores garantizados correspondientes.
+.IP - 
+.BI
+"Churning"
+.R
+: Se refiere a la persuasión de los clientes para 
+cancelar su póliza existente y comprar una nueva, para que 
+el agente obtenga nuevas comisiones. Usualmente no le dicen 
+al cliente que perderá su dinero en valores garantizados 
+en este proceso.
+.[ and .]
+.NH
+Prevención de Fraudes.
+.PP
+Algunas medidas preventivas del fraude en seguro de 
+autos se encuentran desde la estructura de la solicitud, 
+implementando cuestionarios inteligentes y que recaben 
+información suficiente. 
+A través de la implementación de contratos inteligentes\**
+.FS
+El uso de este tipo de contratos en seguros tendría que 
+estar ligado con tecnologías de Big-Data, Machine Learning 
+y Minería de Datos ya que estos contratos utilizan un 
+"Oracle" el cual es un punto de referencia acordado por 
+las partes del contrato que contiene las fuentes de 
+información para determinar los resultados del contrato. [7]
+.FE
+cuyos términos van escritas en código de programación, 
+por lo que existe justicia e imparcialidad tanto para 
+la compañía como para el asegurado y elimina la necesidad 
+de personal para evaluar ciertos aspectos de los reclamos.
+
+La formación de áreas especiales de fraude que se dediquen a 
+desarrollar los sistemas de detección oportuna. 
+La implementación de IA (Inteligencia Artificial), 
+para analizar cada siniestro y generar una clasificación 
+eficaz, detectando características sospechosas y sin necesidad 
+de intervención humana [6].
+
+Para el área de prevención de fraudes se requiere entender y 
+analizar fenómenos de fraude a través de la información disponible, 
+incurrir en leyes y las innumerables formas en las que un 
+asegurado, un agente, un ajustador o un proveedor de servicios 
+como un taller pueden actuar con mala fé es útil para identificar grosso 
+modo las variables que pueden intervenir, sin embargo la 
+unificación de estadística, análisis de datos y algoritmos de 
+Machine Learning es lo que puede permitir un verdadero avance a través de la generación 
+de modelos y algoritmos que puedan ser probados con datos reales antes 
+de ser implementados. 
+
+Se propone implementar una serie de técnicas encaminadas a la
+clasificación, utilizando algorítmos de Machine Learning.
+La información que se puede utilizar es variada, pero en primera 
+instancia se tiene contemplado utilizar las palabras en las 
+declaraciones de siniestros, las diferentes características 
+disponibles del asegurado y de la póliza. 
+
+A continuación, se expandirá más en el tema de la implementación 
+y de la obtención y transformación de la información, primero 
+discutiremos el funcionamiento de estos algoritmos.
+
+.NH
+Machine Learning.
+.PP
+Este término se refiere a la detección de patrones 
+significativos en los datos. Ayuda a encontrar reglas 
+en datos sin un órden aparente. La razón por la que esta disciplina 
+es diferente a la programación de instrucciones en una computadora 
+es porque, debido a la complejidad de los patrones, un programador 
+no podría proveer instrucciones suficientemente específicas
+para que se llevar a cabo las tareas\** [17]. 
+.FS
+Machine Learning es una disciplina que estudia algoritmos 
+computacionales para llevar a cabo una tarea 
+sin requerir instrucciones programadas explicitamente.
+Los algoritmos construyen un modelo matemático basándose 
+en datos de entrenamiento con el fin de hacer predicciones.
+.FE
+
+Hay dos tipos de aprendizaje supervisado y no supervisado.
+En el supervisado se parte de un conjunto de datos con sus respectivas 
+salidas o resultados, en el entrenamiento\**
+.FS
+Un modelo de machine learning se puede dividir en dos 
+etapas generales, una de entrenamiento y otra de predicción, 
+ambas utilizan un conjunto de datos diferente, la etapa de 
+entrenamiento del modelo, no es más que el ajuste de los 
+parámetros a un nivel óptimo.
+.FE
+
+Los modelos no supervisados se llevan a cabo sobre un conjunto de 
+datos que únicamente representan entradas. 
+No se tiene información sobre las categorías, estas tienen 
+que ser encontradas por medio de un algoritmo, como
+Análisis de Componentes Principales o PCA, o algun algoritmo
+de clusterización como KNN. 
+
+Estos algoritmos su vez son usados con frecuencia en modelos 
+supervisados como metodos de análisis esploratorio.
+Este uso de machine learning es empleado para la 
+detección de anomalías [19].
+
+.PP
+El caso de uso propuesto para estos procedimientos es para 
+la clasificación del riesgo de pólizas vigentes.
+Supongamos lo siguiente: una póliza tiene el siguiente 
+vector de variables que la caracterizan
+.EQ
+x sub 1 ,
+x sub 2 ,
+"  ...  " ,
+x sub m 
+.EN
+donde estas variables pueden ser variables binarias que 
+representen una característica de la póliza donde solo 
+hay dos opciones, tiene la característica o no la tiene 
+que codificamos como 1 o 0 respectivamente, o bien, pueden 
+ser variables numéricas continuas (i.e. números reales) 
+como prima de tarifa, deducible, etc., y una variable de 
+respuesta binaria que denominaremos Y, la cual para 
+nuestros fines, representa el evento de que: una póliza 
+vigente culmine en un reclamo fraudulento, tal que 
+.EQ
+Y ∈ "  { "0, 1" } " ,
+.EN
+donde 1 significa alta probabilidad de fraude y 0 lo contrario.
+La probabilidad dada por una función
+.EQ
+"Pr[ Y = 1 | X ]" = " Pr[ X ]"
+.EN
+para la cual utilizaremos la función 
+.I
+sigmoide
+.R
+que veremos más adelante.
+.bp
+Nuestro conjunto de n ∈ N datos puede ser representado como 
+.EQ
+D=  "{ "( x sub i , y sub i )" } " from i=1 to n
+.EN
+donde 
+.EQ
+x sub i " ∈  " R sup d ,
+.EN
+.EQ
+Y ∈ "  { "0, 1" } " ,
+.EN
+es decir, x es nuestro vector de características de una 
+póliza dada, en este caso tiene d ∈ N características. 
+En este caso necesitamos un modelo estadístico de probabilidad 
+para definir si un objeto está en una de dos categorías. 
+Aunque podría ser extendido a múltiples categorías si 
+así se requiriera. 
+
+Un modelo que en su forma básica utiliza una función 
+logística para modelar una variable binaria dependiente 
+como de la que estamos hablando (1 = Alta probabilidad 
+de fraude, 0 = Baja probabilidad de fraude), 
+es el modelo de regresión logística [8]. 
+
+En Machine Learning existen dos tipos de variables, 
+variables explicativas y variables de respuesta, las 
+explicativas son variables independientes que describen 
+o explican a la o las variables de respuesta o variables 
+dependientes [9], en este caso las variables explicativas, 
+son el conjunto de características que conocemos sobre 
+una póliza vigente dada, previas al reclamo.
+
+No podemos contemplar ninguna variable relacionada al 
+siniestro, reclamo, indemnización, o cualquier otra 
+que sea generada hasta el momento del siniestro 
+debido a que nuestro alcance es previo a cualquier reclamo.
+
+ 
+El algoritmo a trabajar tiene que cumplir con las 
+siguientes caracteristicas
+.IP -
+La variable a clasificar es categórica, en este caso binaria.
+.IP -
+Se requiere saber la probabilidad de que en una póliza vigente 
+culmine en fraude dadas las características seleccionadas para el modelo.
+.sp 3
+.NH
+Regresión Logística.
+.PP
+El modelo que se propone es el de regresión Logística que cumple con las 
+especificaciones anteriormente mencionadas.
+Este modelo resuelve el problema de que nuestra variable de respuesta 
+esta entre {0 , 1} relacionando la combinación lineal de variables 
+con el logaritmo de la cuota estadística.
+La cuota estadística que se define como 
+.EQ
+Odds = p over (1-p)
+.EN
+ya no esta en el rango anterior, esta ecuación se expande a lo 
+largo de los números reales, y su comportamiento es exponencial 
+por lo que modelamos su logaritmo y utilizamos la función sigmoide
+.EQ
+sigma" " (p) = 1 over {1 + e sup  -p}
+.EN
+Para ligar la combinacion lineal de varibles que representan
+características de la póliza con una funcion de probabilidad.
+.EQ
+logit " "(p) = ln p over { 1 - p } = theta sub 0 + theta sub 1 x sub 1
++ "  ...  " + theta sub d x sub d
+.EN
+
+
+
+A continuación, se trabajara un conjunto de datos obtenidos de 
+www.kaggle.com/buntyshah/auto-insurance-claims-data
+
+Los datos son ficticios y su único propósito es el de demostrar el flujo
+de trabajo para el desarrollo de un modelo de machine learning,
+servirá como demostración de como seleccionar, transformar y 
+utilizar las variables en un modelo, se realizará también,
+una búsqueda de hiperparámetros óptimos, trabajaremos además con 
+un par de métricas para evaluar el desempeño del algoritmo.
+
+.bp
+.NH
+Ejemplo de aplicación.
+.PP
+Los datos anteriormente mecionados contienen 1000 pólizas con alrededor
+de 40 columnas, las cuales representan características de la póliza,
+estas se muestran a continuación:
+.TS
+doublebox, allbox;
+l,an.
+Variable	Tipo
+months_as_customer	int64
+age	int64
+policy_number	int64
+policy_bind_date	object
+policy_state	object
+policy_csl	object
+policy_deductable	int64
+policy_annual_premium	float64
+umbrella_limit	int64
+insured_zip	int64
+insured_sex	object
+insured_education_level	object
+insured_occupation	object
+insured_hobbies	object
+insured_relationship	object
+capital-gains	int64
+capital-loss	int64
+incident_date	object
+incident_type	object
+collision_type	object
+incident_severity	object
+authorities_contacted	object
+incident_state	object
+incident_city	object
+incident_location	object
+incident_hour_of_the_day	int64
+number_of_vehicles_involved	int64
+property_damage	object
+bodily_injuries	int64
+witnesses	int64
+police_report_available	object
+total_claim_amount	int64
+injury_claim	int64
+property_claim	int64
+vehicle_claim	int64
+auto_make	object
+auto_model	object
+auto_year	int64
+fraud_reported	object
+_c39	float64
+.TE
+.sp 6
+De los cuales se utilizaran las siguientes:
+
+.TS
+doublebox, allbox;
+l, an.
+Variable seleccionada	Tipo
+months_as_customer	int64
+age	int64
+policy_state	object
+policy_csl	object
+policy_deductable	int64
+policy_annual_premium	float64
+umbrella_limit	int64
+insured_zip	int64
+insured_sex	object
+insured_education_level	object
+insured_occupation	object
+insured_hobbies	object
+insured_relationship	object
+capital-gains	int64
+capital-loss	int64
+auto_make	object
+auto_model	object
+.TE
+
+
+Se excluyeron variables relacionadas con el siniestro, 
+puesto que el modelo se utilizaría para saber con antelación
+la probabilidad de que una póliza culmine en un reclamo fraudulento.
+
+Se exluyeron además, aquellas variables con
+información no relacionada al problema de fraude,
+como son campos de fechas o números de identificación, 
+asi como campos con una gran cantidad de información vacia.
+
+Para los datos de tipo númerico (int64) realizaremos una
+normalización, esto es
+.EQ
+{x sub i - x bar sub i} over sigma sub i " para toda  i  ∈ " "{ 1 , m }"
+.EN
+con el fin de centrar los datos alrededor de la media y 
+darles a todos una desviación estandar de uno.
+
+.I
+Nota:\    
+.R
+Este proceso asume que las variables tienen una 
+.BI
+distribución normal,
+.R
+lo cual debería ser puesto a prueba con una prueba de hipótesis,
+pero por fines de practicidad, asumiremos que es cierto y pasaremos
+a la preparación de variables categóricas para el modelo.
+.bp
+.1C
+.TS
+center;
+l| l l l.
+Variable	#3	#2	#1
+_	_	_	_
+policy_state	IL	IN	OH
+policy_csl	500/1000	100/300	250/500
+insured_sex	na	MALE	FEMALE	
+insured_education_level	High School	MD	JD
+insured_occupation	craft-repair	machine-op-inspct	exec-managerial
+insured_hobbies	reading	cross-fit	chess
+insured_relationship	wife	not-in-family	other-relative
+auto_make	Chevrolet	Ford	Mercedes
+auto_model	F150	A5	RAM
+.TE
+.DS R
+.SM
+.B
+Tabla 1. Categorías mas frecuentes.
+.DE
+.NL
+.2C
+.PP
+Para las variables categóricas, primero analizaremos la frecuencia
+de cada categoría en pólizas que hayan sido fraude, posteriormente,
+haremos una variable nueva por cada una de las categorías mas frecuentes
+y mandaremos la tercera a una categoría de "otros"\**. 
+
+En la 
+.B
+Tabla 1
+.R
+se muestran las 3 categorías más frecuentes en los variables 
+seleccionadas, hay algunas variables, como el género en las 
+que solo existen dos categorías, 
+Se escogieron 3 variables de forma arbitraria, pero se pudo
+haber escogido cualquier número, sin embargo, se debe
+evitar generar grandes cantidades de variables, ya que estas
+afectarán los resultados del modelo.
+
+A partir de las categorias mostradas en la 
+.B
+Tabla 1
+.R
+generaremos nuevas variables.
+Estas nuevas variables serán columnas únicamente con valores de 0 o 1, 
+donde 0 representa la ausencia y 1 la presencia de dicha categoría
+en la variable de la póliza.
+
+A continuación se muestran las primeras 5 filas de el resultado de la
+codificación para la variable 
+.I
+"auto_make"
+.R
+.TS
+box center;
+l| l l l l.
+id	Audi	Ford	Mercedes	otros
+_	_	_	_	_
+0	0	0	0	1
+1	0	0	1	0
+2	0	0	0	1
+3	0	0	0	1
+4	0	0	0	1
+.TE
+.FS
+La categoría "otros" representa cualquier otro valor que no sea
+de los mas frecuentes, podemos escojer incluirla o no, 
+intuitivamente sabemos que, una póliza con 0's en todas las categorías
+de una variable, implica que tiene 1 en la categoría de "otros".
+.FE
+.PP
+Esto se llevó a cabo para todas las variables categóricas seleccionadas.
+Al final de estas transformaciones a los datos obtenemos un conjunto de
+variables normalizadas o binarias, en estas condiciones los datos pueden
+ser utilizados para generar un modelo, sin embargo, antes se tiene
+que hacer un análisis exploratorio de los datos con el objetivo de 
+obtener las varianzas respectivas y encontrar las correlaciones entre
+las diferentes variables.
+
+Para variables numéricas, tener los datos normalizados nos permite
+comparar las varianzas, una varianza pequeña\** 
+.FS
+Al estar los datos normalizados todas las varianzas seran numeros 
+"pequeños" sin embargo, el interés esta en la comparación.
+.FE
+en relación con las demas puede indicar que la variable no aportará 
+mucha información al modelo y debería considerarse como candidata 
+a ser excluida.
+
+Una versión mas sofisticada de este análisis de varianzas es el algoritmo
+de Análisis de Componentes Principales o PCA.
+
+PCA tampoco reperesenta una solución completa al problema de selección 
+de variables puesto que solo analiza las varianzas de las variables y
+no su relación con la variable de respuesta, dicha relación fue 
+contemplada en este ejemplo en la codificación de variables categóricas 
+antes mostrada.
+
+.bp
+.1C
+.NH 2
+Análisis exploratorio.
+.PP
+.PSPIC -C pair.ps 10c
+.DS R
+.SM
+.B
+Gráfica 1. Densidad de datos numéricos.
+.DE
+.NL
+.2C
+.PP
+En la
+.B
+Gráfica 1
+.R
+todas las variables numéricas en un diagrama de dispersión suavizado 
+con una función kernel de estimación de densidad, para la diagonal, 
+que correspondería a cada una de las variables graficada contra sí misma 
+es tratada de forma ligeramente distinta, donde se grafica la distribución 
+univariada de los datos.
+La siguiente gráfica es un estracto de la 
+.B
+Gráfica 1
+.R
+correspondiente al primer renglón y segunda columna, o su version transpuesta
+del segundo renglón y primera columna
+.PSPIC mths_age.ps 5c
+En esta podemos ver que existe una relación lineal positiva entre ambas variables,
+por lo que posiblemente no sea de ayuda conservar ambas para el entrenamiento
+del modelo ya que la información que contiene una, es similar a la información
+de la otra.
+
+La estimación hecha con la función kernel solo fue para fines ilustrativos
+ya que al trabajar con grandes cantidades de datos es difícil distinguir
+la manera en que estan distribuidos los datos en una gráfica de dispersión
+Usando este metodo sabemos que donde hay un color mas fuerte indica una alta
+concentración de datos.
+
+A continuacion pasaremos al entrenamiento del modelo con los datos seleccionados
+y transformados.
+.bp
+
+.bp
+.NH 2 2
+Entrenamiento y resultados.
+.PP
+El modelo será entrenado con un 75% de los datos de ejemplo los cuales contienen 
+1000 pólizas y se probará con el 25% restante. Los resultados del modelo pueden
+variar dependiendo de las particiones de los datos.
+
+Los resultados tambien dependen de la métrica que se este evaluando, esta es la que
+determina la orientación o meta del modelo, veremos un modelo enfocado a
+que no se generen 
+.I
+falsos positivos,
+.R
+recordando que el caso positivo es cuando
+.EQ
+Y = 1
+.EN
+entonces el falso positivo se refierea a que la póliza este indicada como fraude de 
+manera incorrecta. 
+La busqueda de hiperparámetros que se hará sera de 5 diferentes métodos de minimización
+de la funcion de costo del modelo de regresión logística y dos hiperparámetros de pesos
+para las variables.
+A continuacion se tienen los resultados del primer modelo.
+.PSPIC cm_acc.ps 8c
+Se obtuvieron los resultados del entrenamento, búsqueda de hiperparámetros, ajuste y 
+evaluación del modelo de regresión logística haciendo 500 cortes aleatorios 
+en los datos, posterior a eso se tomó el promedio aritmético elemento a elemento de 
+las matrices de confusión resultantes.
+
+La métrica que se evaluó fue la de 
+.I
+precisión y exactitud
+.R
+definida como 
+
+.EQ
+{sum "Verdaderos positivos" + sum "Verdaderos negativos"} over {sum "Total de datos"}
+.EN
+
+Se probó tambien bajo la métrica de especificidad, definida de la siguiente forma
+
+.EQ
+{sum "Verdaderos negativos"} over {sum "Total de negativos"}
+.EN
+
+Los resultados del modelo bajo esta nueva métrica son los siguientes
+.PSPIC cm_spec.ps 8c
+
+Por último intentaremos usando una métrica definida de forma externa que da
+prioridad a no catalogar de forma errónea como fraude aquellos reclamos regulares
+.PSPIC cm_cust.ps 8c
+Los modelos se comportan de una forma relativamente similar debido a que las métricas
+aqui mostradas son las que rinden los mejores resultados, ademas de que, para 
+cada resultado de los mostrados se realizó la busqueda de hiperparámetros
+que llega a la misma conclusión en la mayor parte de las ocaciones.
+
+El modelo de regresión logística es un modelo lineal, es posible lograr mejores
+soluciones utilizando un modelo no lineal como un árbol de decisiones
+o una máquina de vectores de soporte (SVM).
+.bp
+.1C
+.SH
+Bibliografía
+.PP
+.SM
+.IP
+Joan Fuentes Jassé, Jordi Poch Estruch, "El fraude en el seguro del Automovil", Tesis del Master en Dirección de Entidades Aseguradoras y Financieras., 2008.
+
+.IP
+Surrano Law Offices, "What Are Some Common Insurance Fraud Indicators?". https://www.surranoinsurancebadfaith.com/what-are-some-common-insurance-fraud-indicators/
+
+.IP
+Alice Holbrook, "How Can Insurance Fraud Be Prevented?", Auto Insurance, Insurance. https://www.nerdwallet.com/blog/insurance/insurance-fraud-prevented/
+
+.IP
+Robert Scott, "The Investigator's Little Black Book 3". http://www.crimetime.com/fraudindicators.htm
+
+.IP
+GNP, "Fraude en Seguros", XIV Seminario de la CNSF.
+
+.IP
+Shift Technology, "Fraude Auto México  -  Internacional", 29 Convención de Aseguradores AMIS. 
+
+.IP
+Lab CFTC, "A Primer On Smart Contracts", www.cftc.gov/LabCFTC. Noviembre 27, 2018. 
+
+.IP
+Tolles Juliana, Meurer, William J., "Logistic Regression Relating Patient Characteristics to Outcomes", JAMA JAMA.
+
+.IP
+Brigitte Baldi, David S. Moore, "The Practice of Statistics in the Life Sciences", 3rd Edition.
+
+.IP
+Gavin Hackeling, "Mastering Machine Learning with scikit-learn", PACKT Publishing open source community experience  distiled, 2014.
+
+.IP
+Department Of Insurance Nebraska, "Insurance Fraud Examples", https://doi.nebraska.gov/
+
+.IP
+Sheechean Ho, "Insurance agent fraud", Fraud Magazine. Marzo-Abril 2014.
+
+.IP
+Lawrence V. Fulton, Francis A. Mendez, Nathaniel D.Bastian, R. Muzaffer Musal, "Confusion Between Odds and Probability, a Pandemic?" Journal of Statistics Education. Volume 20, Number 3 2012.
+
+.IP
+Park, Hyeoun-Ae, "An Introduction to Logistic Regression: From Basic Concepts to Particular Attention to Nursing Domain", College of Nursing and System Biomedical Informatics National Core Research Center, Seoul National University, Seoul, Korea. J Korean Acad Nurs Vol.43 No.2 Abril 2013.
+
+.IP
+Jason Brownlee, "A Gentle Introduction to Logistic Regression With Maximum Likelihood Estimation", Machine Learning Mastery; Probability. Octubre 28, 2019.
+
+.IP
+Lumen Learning, "Graph functions using reflections about the x-axis and the y-axis", Transformation of functions. https://courses.lumenlearning.com/ivytech-collegealgebra/chapter/graph-functions-using-reflections-about-the-x-axis-and-the-y-axis/
+
+.IP
+Shai Shalev-Shwartz and Shai Ben-David, "Understanding Machine Learning From Theory to Algorithms. Cambridge University Press, 2014.
+
+.IP
+J E T Akinsola, "Supervised Machine Learning Alorithms: Classification and Comparison. Research Gate Article Junio 2017.
+
+.IP
+Muhammad Usama, Junaid Qadir, Aunn Raza, Hunain Arif, Kok-Lim Alvin Yau, Yehia Elkhatib, Amir Hussain, Ala Al-Fuqaha. "Unsupervised Machine Learning for Networking Techniques, Applications and Research Challenges", Sunway University. Malaysia.
+
+.IP
+Will Monroe, Lectures on "Logistic Regression", Lecture Notes #22, Agosto, 14, 2017. Basado en un capítulo de Chris Piech.
+
+.IP
+McCullagh, Peter; Nelder, John (1989). "Generalized Linear Models", Second Edition. Boca Raton: Chapman and Hall/CRC. Section 4.2.2. ISBN 0-412-31760-5.
+
+.IP
+Dimitri P. Bertsekas, Nonlinear Programming, Athena Scientific 1999, 2nd edition, pp. 187.
+
+.IP
+Cauchy, Augustin. "Méthode générale pour la résolution des systemes d'équations simultanées." Comp. Rend. Sci. Paris 25.1847 (1847): 536-538.
+
+.IP
+Isabel Casares San José-Marti, "El Fraude en los Seguros". www.fundacioninade.org
+
